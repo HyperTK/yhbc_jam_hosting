@@ -1,4 +1,4 @@
-//ELEMENT.locale(ELEMENT.lang.ja)
+ELEMENT.locale(ELEMENT.lang.ja)
 var app = new Vue({
     el: "#app",
     data: {
@@ -41,22 +41,12 @@ var app = new Vue({
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
             if (valid) {
-                var config = { 
-                    headers: {  
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Access-Control-Allow-Origin': '*'
-                    }
-                }
-                //alert('submit!');
                 this.loading = false;
                 axios.post(
                     'https://yhbc-jam-api.herokuapp.com/create_user', 
                     //'http://127.0.0.1:5000/create_user',
                     this.$data, 
-                    config,
                     )
-                    //'/create_user', this.$date)
                     .then(response => {
                         console.log(response.data)
                         this.loading = true;
@@ -67,7 +57,7 @@ var app = new Vue({
                         this.loading = true;
                         
                     });
-                //this.$refs[formName].resetFields();
+                this.$refs[formName].resetFields();
             } else {
                 console.log('error submit!!');
                 this.loading = true;
