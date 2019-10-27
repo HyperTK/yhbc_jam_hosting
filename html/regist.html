@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>会員登録</title>
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+        />
+        <link rel="stylesheet" href="../css/loading.css"/>
+    </head>
+
+    <body>
+        <div id="app" v-cloak>
+            <h1>regist</h1>
+            <el-form
+                ref="form"
+                :model="form"
+                :rules="rules"
+                label-width="120px"
+                v-show="loading"
+            >
+                <el-form-item label="姓" prop="last_name">
+                    <el-input v-model="form.last_name"></el-input>
+                </el-form-item>
+                <br />
+                <el-form-item label="名" prop="first_name">
+                    <el-input v-model="form.first_name"></el-input>
+                </el-form-item>
+
+                <br />
+                <el-form-item label="姓(カナ)" prop="last_kana">
+                    <el-input v-model="form.last_kana"></el-input>
+                </el-form-item>
+
+                <br />
+                <el-form-item label="名(カナ)" prop="first_kana">
+                    <el-input v-model="form.first_kana"></el-input>
+                </el-form-item>
+                <el-form-item label="生年月日" prop="birth">
+                    <el-date-picker
+                        v-model="form.birth"
+                        type="date"
+                        placeholder="日付を選んでください"
+                        default-value="2000-01-01"
+                    >
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="電話番号(ハイフン無し)" prop="phone">
+                    <el-input v-model="form.phone"></el-input>
+                </el-form-item>
+                <el-form-item label="メールアドレス(任意)" prop="email">
+                    <el-input v-model="form.email"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="dialogVisible = true"
+                        >登録</el-button
+                    >
+                    <el-button @click="resetForm('form')">クリア</el-button>
+                </el-form-item>
+            </el-form>
+            
+            <el-dialog
+                title="登録前の確認"
+                :visible.sync="dialogVisible"
+                width="100%"
+                :before-close="handleClose"
+                v-cloak
+            >
+                <span>この内容で登録しますか？</span>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialogVisible = false">キャンセル</el-button>
+                    <el-button type="primary" @click="submitForm('form'); dialogVisible = false;"
+                        >OK</el-button
+                    >
+                </span>
+            </el-dialog>
+
+            <el-dialog
+                title="登録完了"
+                :visible.sync="registedDialog"
+                width="100%"
+                v-cloak
+            >
+                <h2>会員登録が完了しました！</h2>
+                <p>ようこそ、由利本荘ボルダリングクラブへ</p>
+                <p>あなたの参加を歓迎します！</p>
+                <p style="text-align: right;">メンバー一同より</p>
+                <span slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="registedDialog = false;"
+                        >OK</el-button
+                    >
+                </span>
+            </el-dialog>
+            <div v-show="!loading" class="loader"></div>
+            <div v-show="!loading" style="color: #606266;"><center>登録中...お待ち下さい。</center></div>
+
+        </div>
+        <script src="https://unpkg.com/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+        <script src="http://unpkg.com/element-ui/lib/umd/locale/ja.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="../js/regist.js"></script>
+    </body>
+</html>
