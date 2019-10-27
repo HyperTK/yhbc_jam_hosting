@@ -1,4 +1,4 @@
-ELEMENT.locale(ELEMENT.lang.ja)
+//ELEMENT.locale(ELEMENT.lang.ja)
 var app = new Vue({
     el: "#app",
     data: {
