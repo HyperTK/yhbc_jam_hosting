@@ -102,7 +102,7 @@ var app = new Vue({
                         this.loading = true;
                         this.opneErrorNotif()
                     });
-                //this.$refs[formName].resetFields();
+                this.$refs[formName].resetFields();
             } else {
                 console.log('error submit!!');
                 this.loading = true;
