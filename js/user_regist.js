@@ -35,7 +35,6 @@ var app = new Vue({
             ],
             phone: [
                 {required: true, message: '電話番号を入力してください', trigger: 'blur'},
-                { type: 'number', message: 'すべて数字で入力してください'}
             ],
 
         }
