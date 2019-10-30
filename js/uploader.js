@@ -1,4 +1,11 @@
 ELEMENT.locale(ELEMENT.lang.ja)
+const config = { 
+    headers: {  
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Access-Control-Allow-Origin': '*'
+    }
+}
 var app = new Vue({
     el: "#app",
     data: {
@@ -7,14 +14,19 @@ var app = new Vue({
             prob_name: '',
             select_wall: '',
             select_grade: '',
-            line_notif: '',
+            checked_tags: [],
+            line_notif: true,
         },
         walls: [],
         grades: [],
+        tags: [],
         imageUrl: '',
+        inputTag: '',
         dialogVisible: false,
+        inputVisible: false,
         registedDialog: false,
         loading: true,
+        
 
         rules: {
             creator: [
@@ -31,15 +43,8 @@ var app = new Vue({
     methods: {
         api(url) {
             this.loading = false;
-            var config = { 
-                headers: {  
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Access-Control-Allow-Origin': '*'
-                }
-            }
             axios.get(
-                //'https://yhbc-jam-api.herokuapp.com/' + url, 
+                //'https://yhbc-jam-api.herokuapp.com' + url, 
                 'http://127.0.0.1:5000' + url,
                 config,
                 )
@@ -47,6 +52,7 @@ var app = new Vue({
                     var res = response.data
                     this.walls = res[0].walls;
                     this.grades = res[0].grades;
+                    this.tags = res[0].tags;
                     this.loading = true;
                     this.registedDialog = true;
                 })
@@ -76,17 +82,9 @@ var app = new Vue({
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
             if (valid) {
-                var config = { 
-                    headers: {  
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Access-Control-Allow-Origin': '*'
-                    }
-                }
-                //alert('submit!');
                 this.loading = false;
                 axios.post(
-                    'https://yhbc-jam-api.herokuapp.com/create_user', 
+                    'https://yhbc-jam-api.herokuapp.com/create_problem', 
                     //'http://127.0.0.1:5000/create_user',
                     this.$data, 
                     config,
@@ -113,8 +111,26 @@ var app = new Vue({
             }
             });
         },
+        handleInputConfirm() {
+            let inputTag = this.inputTag;
+            if (inputTag) {
+                this.form.checked_tags.push(inputTag);
+            }
+            this.inputVisible = false;
+            this.inputTag = '';
+        },
+        showInput() {
+            this.inputVisible = true;
+            this.$nextTick(_ => {
+                this.$refs.saveTagInput.$refs.input.focus();
+            });
+        },
         resetForm(formName) {
             this.$refs[formName].resetFields();
+            this.form.select_grade = ''
+            this.form.select_wall = ''
+            this.form.select_tags = ''
+
         },
         handleClose(done) {
             this.$confirm('登録をキャンセルしますか？')

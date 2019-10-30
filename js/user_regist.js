@@ -51,7 +51,6 @@ var app = new Vue({
                         'Access-Control-Allow-Origin': '*'
                     }
                 }
-                //alert('submit!');
                 this.loading = false;
                 axios.post(
                     'https://yhbc-jam-api.herokuapp.com/create_user', 
@@ -70,13 +69,12 @@ var app = new Vue({
                     .catch(error => {
                         console.log(error.response)
                         this.loading = true;
-                        this.opneErrorNotif()
+                        this.opneErrorNotif('登録に失敗しました。もう一度やり直してください。\n再度失敗するようであれば「滝野」まで連絡願います。');
                     });
                 //this.$refs[formName].resetFields();
             } else {
-                console.log('error submit!!');
                 this.loading = true;
-                this.registedDialog = true;
+                this.opneErrorNotif('未入力の項目があります。ご確認ください。');
                 return false;
             }
             });
@@ -91,11 +89,11 @@ var app = new Vue({
             })
             .catch(_ => {});
         },
-        opneErrorNotif() {
+        opneErrorNotif(message) {
             this.$notify.error({
                 title: 'エラー',
                 duration: 5000,
-                message: '登録に失敗しました。もう一度やり直してください。\n再度失敗するようであれば「滝野」まで連絡願います。'
+                message: message
             });
         }
     }

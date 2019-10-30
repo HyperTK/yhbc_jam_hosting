@@ -9,73 +9,81 @@
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
     <link rel="stylesheet" href="../css/loading.css" />
     <link rel="stylesheet" href="../css/uploader.css" />
+    <link rel="stylesheet" href="../css/tag.css" />
 </head>
 
 <body>
     <div id="app" v-cloak>
         <h1>Uploader</h1>
-        <el-form ref="form" :model="form" :rules="rules" label-width="120px" v-show="loading">
+        <el-form ref="form" :model="form" :rules="rules" v-show="loading">
             <el-form-item label="作成者" prop="creator">
-                <el-input 
-                maxlength="30"
-                show-word-limit
-                v-model="form.creator">
-                    <el-button slot="prepend" icon="el-icon-user-solid"></el-button>
+                <el-input maxlength="30" show-word-limit v-model="form.creator">
                 </el-input>
             </el-form-item>
-            <br />
 
             <el-form-item label="課題名" prop="prob_name">
-                <el-input 
-                maxlength="30"
-                show-word-limit
-                v-model="form.prob_name">
-                    <el-button slot="prepend" icon="el-icon-question"></el-button>
+                <el-input maxlength="30" show-word-limit v-model="form.prob_name">
                 </el-input>
             </el-form-item>
+            <el-row :gutter="10">
+                <el-col :span="12">
+                    <el-form-item label="傾斜">
+                        <el-select v-model="form.select_wall" placeholder="傾斜を選択">
+                            <el-option v-for="wall in walls" v-bind:value="wall.category" v-bind:key="wall.id">
+                                {{ wall.category }}
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="グレード">
+                        <el-select v-model="form.select_grade" placeholder="グレードを選択">
+                            <el-option v-for="grade in grades" v-bind:value="grade.grade" v-bind:key="grade.id">
+                                {{ grade.grade }}
+                            </el-option>
+                            <el-button slot="append" icon="el-icon-search"></el-button>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-collapse>
+                <el-collapse-item title="タグ(最大4つまで)" name="1">
+                    <el-checkbox-group v-model="form.checked_tags" :max="4">
+                        <el-checkbox v-for="tag in tags" :label="tag.name" :key="tag.id">{{tag.name}}</el-checkbox>
+                    </el-checkbox-group>
+                    <el-input class="input-new-tag" v-if="inputVisible" v-model="inputTag" ref="saveTagInput"
+                        size="mini" @keypress.enter.native="handleInputConfirm" @blur="handleInputConfirm">
+                    </el-input>
+                    <el-button v-else class="button-new-tag" size="mini" @click="showInput">+ New Tag</el-button>
+                </el-collapse-item>
+            </el-collapse>
             <br />
-
-            <el-form-item label="傾斜">
-                <el-select v-model="form.select_wall" placeholder="傾斜を選択してください">
-                    <el-option v-for="wall in walls" v-bind:value="wall.category" v-bind:key="wall.id">
-                        {{ wall.category }}
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <br />
-
-            <el-form-item label="グレード">
-                <el-select v-model="form.select_grade" placeholder="グレードを選択してください">
-                    <el-option v-for="grade in grades" v-bind:value="grade.grade" v-bind:key="grade.id">
-                        {{ grade.grade }}
-                    </el-option>
-                    <el-button slot="append" icon="el-icon-search"></el-button>
-                </el-select>
-            </el-form-item>
-            <br />
-
             <el-form-item label="課題">
                 <el-upload class="problem-uploader" action="https://jsonplaceholder.typicode.com/posts/"
-                    :show-file-list="false" 
-                    :thumbnail-mode="true"
-                    :on-success="handleProblemSuccess" 
-                    :before-upload="beforeProblemUpload" >
+                    :show-file-list="false" :thumbnail-mode="true" :on-success="handleProblemSuccess"
+                    :before-upload="beforeProblemUpload">
                     <img v-if="imageUrl" :src="imageUrl" class="problem" />
                     <i v-else class="el-icon-plus problem-uploader-icon"></i>
                 </el-upload>
             </el-form-item>
-            <br />
 
-            <el-form-item label="LINE通知">
-                <el-switch v-model="form.line_notif">
-                </el-switch>
-            </el-form-item>
-            <br />
-
-            <el-form-item>
-                <el-button type="primary" @click="dialogVisible = true">登録</el-button>
-                <el-button @click="resetForm('form')">クリア</el-button>
-            </el-form-item>
+            <el-row :gutter="10">
+                <el-col :span="8">
+                    <el-form-item>
+                        <el-switch v-model="form.line_notif" active-text="LINE通知"></el-switch>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item>
+                        <el-button type="primary" @click="dialogVisible = true">登録</el-button>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item>
+                        <el-button @click="resetForm('form')">クリア</el-button>
+                    </el-form-item>
+                </el-col>
+            </el-row>
         </el-form>
 
         <el-dialog title="登録前の確認" :visible.sync="dialogVisible" width="100%" :before-close="handleClose" v-cloak>
@@ -92,4 +100,5 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="../js/uploader.js"></script>
 </body>
+
 </html>

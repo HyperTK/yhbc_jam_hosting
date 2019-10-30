@@ -13,30 +13,41 @@
 
 <body>
     <div id="app" v-cloak>
-        <h1>タグ登録フォーム</h1>
-        <el-form ref="form" :model="form" v-show="loading">
+        <h1>タグ管理</h1>
+        <p>登録済みのタグ</p>
+        <el-tag
+            v-bind:key="tag.id"
+            v-for="tag in registedTags"
+            closable
+            :disable-transitions="false"
+            @close="handleDelete(tag)">
+            {{tag.name}}
+        </el-tag>
+        <br />
+        <p>新規登録</p>
+        <el-form ref="form" :model="form" v-show="loading" @submitForm.prevent >
             <el-form-item label="タグ" prop="inputTag">
                     <el-tag
                     :key="tag"
-                    v-for="tag in dynamicTags"
+                    v-for="tag in form.dynamicTags"
                     closable
                     :disable-transitions="false"
                     @close="handleClose(tag)">
                     {{tag}}
                 </el-tag>
-                <el-input class="input-new-tag" v-if="inputVisible" v-model="form.inputTag" ref="saveTagInput" size="default"
-                    @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm">
+                <el-input class="input-new-tag" v-if="inputVisible" v-model="inputTag" ref="saveTagInput" size="default"
+                    @keypress.enter.native="handleInputConfirm" @blur="handleInputConfirm">
                 </el-input>
                 <el-button v-else class="button-new-tag" size="default" @click="showInput">+ New Tag</el-button>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="dialogVisible = true">登録</el-button>
+                <el-button type="primary" @click="submitForm('form')">登録</el-button>
             </el-form-item>
         </el-form>
 
         <div v-show="!loading" class="loader"></div>
         <div v-show="!loading" style="color: #606266;">
-            <center>登録中...お待ち下さい。</center>
+            <center>処理中...お待ち下さい。</center>
         </div>
 
     </div>
@@ -44,7 +55,7 @@
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script src="https://unpkg.com/element-ui/lib/umd/locale/ja.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="../js/tag_regist.js"></script>
+    <script src="../js/tag_edit.js"></script>
 </body>
 
 </html>
