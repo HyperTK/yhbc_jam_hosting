@@ -1,4 +1,11 @@
 ELEMENT.locale(ELEMENT.lang.ja)
+const config = { 
+    headers: {  
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Access-Control-Allow-Origin': '*'
+    }
+}
 var app = new Vue({
     el: "#app",
     data: {
@@ -43,13 +50,6 @@ var app = new Vue({
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
             if (valid) {
-                var config = { 
-                    headers: {  
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Access-Control-Allow-Origin': '*'
-                    }
-                }
                 this.loading = false;
                 axios.post(
                     'https://yhbc-jam-api.herokuapp.com/create_user', 

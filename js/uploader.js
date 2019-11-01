@@ -6,8 +6,18 @@ const config = {
         'Access-Control-Allow-Origin': '*'
     }
 }
+const post_config = { 
+    headers: {  
+        'Content-Type': 'multipart/form-data',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Access-Control-Allow-Origin': '*'
+    }
+}
 var app = new Vue({
     el: "#app",
+    mounted: function() {
+        this.preload();
+    },
     data: {
         form: {
             creator: '',
@@ -15,37 +25,44 @@ var app = new Vue({
             select_wall: '',
             select_grade: '',
             checked_tags: [],
+            fileList: [],
             line_notif: true,
         },
         walls: [],
         grades: [],
         tags: [],
-        imageUrl: '',
         inputTag: '',
+        dialogImageUrl: '',
         dialogVisible: false,
+        previewVisible: false,
         inputVisible: false,
         registedDialog: false,
         loading: true,
-        
 
         rules: {
             creator: [
-                { max: 30, message: '30文字以内で入力して下さい', trigger: 'blur' }
+                { max: 30, message: '30文字以内で入力して下さい', trigger: 'blur' },
             ],
             prob_name: [
-                { max: 30, message: '30文字以内で入力して下さい', trigger: 'blur' }
+                { max: 30, message: '30文字以内で入力して下さい', trigger: 'blur' },
             ],
+            select_wall: [
+                { required: true, message: '傾斜を選択してね', trigger: 'change' },
+            ],
+            select_grade: [
+                { required: true, message: 'グレードを選択してね', trigger: 'change' },
+            ],
+            fileList: [
+                { required: true, message: '画像を選択してね', trigger: 'blur' },
+            ]
         }
     },
-    mounted: function() {
-        this.api("/get_formdata")
-    },
     methods: {
-        api(url) {
+        preload() {
             this.loading = false;
             axios.get(
-                //'https://yhbc-jam-api.herokuapp.com' + url, 
-                'http://127.0.0.1:5000' + url,
+                //'https://yhbc-jam-api.herokuapp.com/get_formdata',
+                'http://127.0.0.1:5000/get_formdata',
                 config,
                 )
                 .then(response => {
@@ -59,62 +76,80 @@ var app = new Vue({
                 .catch(error => {
                     console.log(error.response)
                     this.loading = true;
-                    this.opneErrorNotif();
+                    const title = 'データロードエラー' 
+                    const mes = 'データの読み込みに失敗しました。もう一度トライしてください';
+                    const dur = 5000;
+                    this.opneErrorNotif(title, mes, dur)
                 });
-        },
-        handleProblemSuccess(res, file) {
-            console.log(file.raw)
-            this.imageUrl = URL.createObjectURL(file.raw);
-        },
-        handlePictureCardPreview(file) {
-            this.dialogImageUrl = file.url;
-            this.dialogVisible = true;
-        },
-        beforeProblemUpload(file) {
-            const isJPG = file.type === 'image/jpeg';
-            const isPNG = file.type === 'image/png';
-
-            if(!isJPG && !isPNG) {
-                this.$message.error('写真はJPEGかPNGでアップロードしてください');
-            }
-            return isJPG || isPNG;
         },
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
             if (valid) {
                 this.loading = false;
+                var formData = new FormData();
+                formData.append('creator', this.form.creator)
+                formData.append('problem', this.form.prob_name)
+                formData.append('wall', this.form.select_wall)
+                formData.append('grade', this.form.select_grade)
+                // タグ追加
+                for (let index = 0; index < this.form.checked_tags.length; index++) {
+                    const element = this.form.checked_tags[index];
+                    formData.append('tags' + (index + 1).toString(), element);
+                }
+                // 画像追加
+                for (let index = 0; index < this.form.fileList.length; index++) {
+                    const element = this.form.fileList[index];
+                    formData.append('images' + (index + 1).toString(), element.raw);
+                }
                 axios.post(
-                    'https://yhbc-jam-api.herokuapp.com/create_problem', 
-                    //'http://127.0.0.1:5000/create_user',
-                    this.$data, 
-                    config,
+                    //'https://yhbc-jam-api.herokuapp.com/create_problem', 
+                    'http://127.0.0.1:5000/create_problem',
+                    formData, 
+                    post_config,
                     )
                     .then(response => {
                         const res = response.data
                         this.id = res.id
                         this.name = res.name
-
                         this.loading = true;
                         this.registedDialog = true;
+                        this.$refs[formName].resetFields();
                     })
                     .catch(error => {
                         console.log(error.response)
                         this.loading = true;
-                        this.opneErrorNotif()
+                        const title = '登録エラー' 
+                        const mes = '登録に失敗しました。もう一度やり直してください。\n再度失敗するようであれば「滝野」まで連絡願います。';
+                        const dur = 5000;
+                        this.opneErrorNotif(title, mes, dur)
                     });
-                this.$refs[formName].resetFields();
             } else {
-                console.log('error submit!!');
                 this.loading = true;
-                this.registedDialog = true;
+                const title = 'データ送信エラー' 
+                const mes = 'データの送信に失敗しました。未入力の項目を確認し、再度トライしてください。';
+                const dur = 5000;
+                this.opneErrorNotif(title, mes, dur)
                 return false;
             }
             });
         },
+        handleAdd(file, fileList) {
+            this.form.fileList = fileList;
+            console.log(file, fileList);
+        },
+        handleRemove(file, fileList) {
+            this.form.fileList = fileList;
+            console.log(file, fileList);
+        },
+        handlePictureCardPreview(file) {
+            this.dialogImageUrl = file.url;
+            this.previewVisible = true;
+        },
         handleInputConfirm() {
             let inputTag = this.inputTag;
             if (inputTag) {
-                this.form.checked_tags.push(inputTag);
+                var len = this.tags.length;
+                this.tags.push({'id':len + 1, 'name': inputTag});
             }
             this.inputVisible = false;
             this.inputTag = '';
@@ -127,24 +162,17 @@ var app = new Vue({
         },
         resetForm(formName) {
             this.$refs[formName].resetFields();
-            this.form.select_grade = ''
-            this.form.select_wall = ''
-            this.form.select_tags = ''
-
+            this.form.select_grade = '';
+            this.form.select_wall = '';
+            this.form.select_tags = '';
+            this.form.imageUrl = '';
         },
-        handleClose(done) {
-            this.$confirm('登録をキャンセルしますか？')
-            .then(_ => {
-            done();
-            })
-            .catch(_ => {});
-        },
-        opneErrorNotif() {
+        opneErrorNotif(title, message, duration) {
             this.$notify.error({
-                title: 'エラー',
-                duration: 5000,
-                message: '登録に失敗しました。もう一度やり直してください。\n再度失敗するようであれば「滝野」まで連絡願います。'
+                title: title,
+                duration: duration,
+                message: message
             });
-        }
+        },
     }
 });
