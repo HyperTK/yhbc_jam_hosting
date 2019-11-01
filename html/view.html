@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>View</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
+    <link rel="stylesheet" href="../css/loading.css" />
+    <link rel="stylesheet" href="../css/tag.css" />
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <h1>View</h1>
+        <el-form ref="form" :model="form" :rules="rules" v-show="loading">
+            <el-row :gutter="10">
+                <el-col :span="12">
+                    <el-form-item label="傾斜" prop="select_wall">
+                        <el-select v-model="form.select_wall" placeholder="傾斜を選択">
+                            <el-option v-for="wall in walls" v-bind:value="wall.category" v-bind:key="wall.id">
+                                {{ wall.category }}
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="グレード" prop="select_grade">
+                        <el-select v-model="form.select_grade" placeholder="グレードを選択">
+                            <el-option v-for="grade in grades" v-bind:value="grade.grade" v-bind:key="grade.id">
+                                {{ grade.grade }}
+                            </el-option>
+                            <el-button slot="append" icon="el-icon-search"></el-button>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-form-item>
+                <el-button type="primary" @click="submitForm('form')">検索</el-button>
+                <el-button @click="resetForm('form')">クリア</el-button>
+            </el-form-item>
+        </el-form>
+        <div v-show="!loading" class="loader"></div>
+        <div v-show="!loading" style="color: #606266;">
+            <center>処理中...お待ち下さい。</center>
+        </div>
+    </div>
+        <script src="https://unpkg.com/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+        <script src="https://unpkg.com/element-ui/lib/umd/locale/ja.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="../js/view.js"></script>
+</body>
+
+</html>

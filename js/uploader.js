@@ -164,7 +164,7 @@ var app = new Vue({
             this.$refs[formName].resetFields();
             this.form.select_grade = '';
             this.form.select_wall = '';
-            this.form.select_tags = '';
+            this.form.checked_tags = [];
             this.form.imageUrl = '';
         },
         opneErrorNotif(title, message, duration) {
