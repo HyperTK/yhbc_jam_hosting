@@ -19,12 +19,6 @@ var app = new Vue({
         registedTags: [],
         loading: true,
         inputVisible: false,
-        headers: {  
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            'Access-Control-Allow-Origin': '*'
-        }
-
     },
     methods: {
         trigger: (event) => {
@@ -38,7 +32,7 @@ var app = new Vue({
                 this.loading = false;
                 axios.post(
                     //'https://yhbc-jam-api.herokuapp.com/create_user', 
-                    'http://127.0.0.1:5000/create_tag',
+                    'http://127.0.0.1:5000/tag/create_tag',
                     this.$data, 
                     config,
                     )
@@ -65,7 +59,7 @@ var app = new Vue({
             this.loading = false;
             axios.get(
                 //'https://yhbc-jam-api.herokuapp.com//get_tags', 
-                'http://127.0.0.1:5000/get_tags',
+                'http://127.0.0.1:5000/tag/get_tags',
                 this.$data, 
                 config,
                 )
@@ -85,7 +79,7 @@ var app = new Vue({
         handleDelete(tag) {
             axios.post(
                 //'https://yhbc-jam-api.herokuapp.com//get_tags', 
-                'http://127.0.0.1:5000/delete_tag',
+                'http://127.0.0.1:5000/tag/delete_tag',
                 tag,
                 config,
                 )

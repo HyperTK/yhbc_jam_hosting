@@ -62,7 +62,7 @@ var app = new Vue({
             this.loading = false;
             axios.get(
                 //'https://yhbc-jam-api.herokuapp.com/get_formdata',
-                'http://127.0.0.1:5000/get_formdata',
+                'http://127.0.0.1:5000/problem/get_formdata',
                 config,
                 )
                 .then(response => {
@@ -103,17 +103,22 @@ var app = new Vue({
                 }
                 axios.post(
                     //'https://yhbc-jam-api.herokuapp.com/create_problem', 
-                    'http://127.0.0.1:5000/create_problem',
+                    'http://127.0.0.1:5000/problem/create_problem',
                     formData, 
                     post_config,
                     )
                     .then(response => {
                         const res = response.data
-                        this.id = res.id
-                        this.name = res.name
+                        this.id = res.id;
+                        this.name = res.name;
                         this.loading = true;
+                        this.checked_tags = [];
                         this.registedDialog = true;
                         this.$refs[formName].resetFields();
+                        const title = '登録成功' 
+                        const mes = '課題の登録に成功しました！';
+                        const dur = 5000;
+                        this.opneSuccessNotif(title, mes, dur);
                     })
                     .catch(error => {
                         console.log(error.response)
@@ -121,14 +126,14 @@ var app = new Vue({
                         const title = '登録エラー' 
                         const mes = '登録に失敗しました。もう一度やり直してください。\n再度失敗するようであれば「滝野」まで連絡願います。';
                         const dur = 5000;
-                        this.opneErrorNotif(title, mes, dur)
+                        this.opneErrorNotif(title, mes, dur);
                     });
             } else {
                 this.loading = true;
                 const title = 'データ送信エラー' 
                 const mes = 'データの送信に失敗しました。未入力の項目を確認し、再度トライしてください。';
                 const dur = 5000;
-                this.opneErrorNotif(title, mes, dur)
+                this.opneErrorNotif(title, mes, dur);
                 return false;
             }
             });
@@ -167,7 +172,14 @@ var app = new Vue({
             this.form.checked_tags = [];
             this.form.imageUrl = '';
         },
-        opneErrorNotif(title, message, duration) {
+        openSuccessNotif(title, message, duration) {
+            this.$notify.success({
+                title: title,
+                duration: duration,
+                message: message
+            });
+        },
+        openErrorNotif(title, message, duration) {
             this.$notify.error({
                 title: title,
                 duration: duration,

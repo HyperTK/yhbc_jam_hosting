@@ -52,7 +52,7 @@ var app = new Vue({
             if (valid) {
                 this.loading = false;
                 axios.post(
-                    'https://yhbc-jam-api.herokuapp.com/create_user', 
+                    'https://yhbc-jam-api.herokuapp.com/user/create_user', 
                     //'http://127.0.0.1:5000/create_user',
                     this.$data, 
                     config,

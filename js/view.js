@@ -1,7 +1,7 @@
 ELEMENT.locale(ELEMENT.lang.ja)
 const config = { 
     headers: {  
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
         'X-Requested-With': 'XMLHttpRequest',
         'Access-Control-Allow-Origin': '*'
     }
@@ -15,11 +15,12 @@ var app = new Vue({
         form: {
             select_wall: '',
             select_grade: '',
-            tags: [],
+            checked_tags: [],
         },
         walls:'',
         grades: '',
         tags: '',
+        inputVisible: false,
         dialogVisible: false,
         loading: true,
         rules: {
@@ -31,7 +32,7 @@ var app = new Vue({
             this.loading = false;
             axios.get(
                 //'https://yhbc-jam-api.herokuapp.com/get_formdata',
-                'http://127.0.0.1:5000/get_formdata',
+                'http://127.0.0.1:5000/problem/get_formdata',
                 config,
                 )
                 .then(response => {
@@ -54,11 +55,21 @@ var app = new Vue({
             this.$refs[formName].validate((valid) => {
             if (valid) {
                 this.loading = false;
-
+                var params = {
+                    params: {
+                        wall: this.form.select_wall,
+                        grade: this.form.select_grade,
+                    }
+                }
+                // タグ追加
+                for (let index = 0; index < this.form.checked_tags.length; index++) {
+                    const element = this.form.checked_tags[index];
+                    params.params['tags' + (index + 1).toString()] = element;
+                }
                 axios.get(
                     //'https://yhbc-jam-api.herokuapp.com/create_problem', 
-                    'http://127.0.0.1:5000/get_problems',
-                    this.$data, 
+                    'http://127.0.0.1:5000/problem/get_problems', 
+                    params,
                     config,
                     )
                     .then(response => {
@@ -84,6 +95,21 @@ var app = new Vue({
                 this.opneErrorNotif(title, mes, dur)
                 return false;
             }
+            });
+        },
+                handleInputConfirm() {
+            let inputTag = this.inputTag;
+            if (inputTag) {
+                var len = this.tags.length;
+                this.tags.push({'id':len + 1, 'name': inputTag});
+            }
+            this.inputVisible = false;
+            this.inputTag = '';
+        },
+        showInput() {
+            this.inputVisible = true;
+            this.$nextTick(_ => {
+                this.$refs.saveTagInput.$refs.input.focus();
             });
         },
         resetForm(formName) {
