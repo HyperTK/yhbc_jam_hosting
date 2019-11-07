@@ -38,8 +38,8 @@ var app = new Vue({
             this.loading = false;
             this.contents = "";
             axios.get(
-                //'https://yhbc-jam-api.herokuapp.com/get_formdata',
-                'http://127.0.0.1:5000/problem/get_formdata',
+                'https://yhbc-jam-api.herokuapp.com/problem/get_formdata',
+                //'http://127.0.0.1:5000/problem/get_formdata',
                 config,
                 )
                 .then(response => {
