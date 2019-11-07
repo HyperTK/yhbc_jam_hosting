@@ -60,8 +60,8 @@ var app = new Vue({
         preload() {
             this.loading = false;
             axios.get(
-                //'https://yhbc-jam-api.herokuapp.com/get_formdata',
-                'http://127.0.0.1:5000/problem/get_formdata',
+                'https://yhbc-jam-api.herokuapp.com/get_formdata',
+                //'http://127.0.0.1:5000/problem/get_formdata',
                 config,
                 )
                 .then(response => {
@@ -100,8 +100,8 @@ var app = new Vue({
                     formData.append('images' + (index + 1).toString(), element.raw);
                 }
                 axios.post(
-                    //'https://yhbc-jam-api.herokuapp.com/create_problem', 
-                    'http://127.0.0.1:5000/problem/create_problem',
+                    'https://yhbc-jam-api.herokuapp.com/problem/create_problem', 
+                    //'http://127.0.0.1:5000/problem/create_problem',
                     formData, 
                     post_config,
                     )

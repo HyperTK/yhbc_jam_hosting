@@ -31,8 +31,8 @@ var app = new Vue({
             if (valid) {
                 this.loading = false;
                 axios.post(
-                    //'https://yhbc-jam-api.herokuapp.com/create_user', 
-                    'http://127.0.0.1:5000/tag/create_tag',
+                    'https://yhbc-jam-api.herokuapp.com/tag/create_user', 
+                    //'http://127.0.0.1:5000/tag/create_tag',
                     this.$data, 
                     config,
                     )
