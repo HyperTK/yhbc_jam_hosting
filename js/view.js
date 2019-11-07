@@ -75,7 +75,7 @@ var app = new Vue({
                     params.params['tags' + (index + 1).toString()] = element;
                 }
                 axios.get(
-                    'https://yhbc-jam-api.herokuapp.com/problem/create_problem', 
+                    'https://yhbc-jam-api.herokuapp.com/problem/get_problems', 
                     //'http://127.0.0.1:5000/problem/get_problems', 
                     params,
                     config,
