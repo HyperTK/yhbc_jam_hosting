@@ -68,12 +68,12 @@ var app = new Vue({
                     .catch(error => {
                         console.log(error.response)
                         this.loading = true;
-                        this.opneErrorNotif('登録に失敗しました。もう一度やり直してください。\n再度失敗するようであれば「滝野」まで連絡願います。');
+                        this.openErrorNotif('登録に失敗しました。もう一度やり直してください。\n再度失敗するようであれば「滝野」まで連絡願います。');
                     });
                 //this.$refs[formName].resetFields();
             } else {
                 this.loading = true;
-                this.opneErrorNotif('未入力の項目があります。ご確認ください。');
+                this.openErrorNotif('未入力の項目があります。ご確認ください。');
                 return false;
             }
             });
@@ -88,7 +88,7 @@ var app = new Vue({
             })
             .catch(_ => {});
         },
-        opneErrorNotif(message) {
+        openErrorNotif(message) {
             this.$notify.error({
                 title: 'エラー',
                 duration: 5000,

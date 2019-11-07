@@ -7,107 +7,109 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Uploader</title>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <link rel="stylesheet" href="../css/loading.css" />
     <link rel="stylesheet" href="../css/uploader.css" />
     <link rel="stylesheet" href="../css/tag.css" />
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>
 
 <body>
     <div id="app" v-cloak>
-        <h1>Uploader</h1>
-        <el-form ref="form" :model="form" :rules="rules" v-show="loading">
-            <el-form-item label="作成者" prop="creator">
-                <el-input maxlength="30" show-word-limit v-model="form.creator">
-                </el-input>
-            </el-form-item>
-
-            <el-form-item label="課題名" prop="prob_name">
-                <el-input maxlength="30" show-word-limit v-model="form.prob_name">
-                </el-input>
-            </el-form-item>
-
-            <el-row :gutter="10">
-                <el-col :span="12">
-                    <el-form-item label="傾斜" prop="select_wall">
-                        <el-select v-model="form.select_wall" placeholder="傾斜を選択">
-                            <el-option v-for="wall in walls" v-bind:value="wall.category" v-bind:key="wall.id">
-                                {{ wall.category }}
-                            </el-option>
-                        </el-select>
+        <section class="section">
+            <div class="container">
+                <h1>Uploader</h1>
+                <el-form ref="form" :model="form" :rules="rules" v-show="loading">
+                    <el-form-item label="作成者" prop="creator">
+                        <el-input maxlength="30" show-word-limit v-model="form.creator">
+                        </el-input>
                     </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="グレード" prop="select_grade">
-                        <el-select v-model="form.select_grade" placeholder="グレードを選択">
-                            <el-option v-for="grade in grades" v-bind:value="grade.grade" v-bind:key="grade.id">
-                                {{ grade.grade }}
-                            </el-option>
-                            <el-button slot="append" icon="el-icon-search"></el-button>
-                        </el-select>
+
+                    <el-form-item label="課題名" prop="prob_name">
+                        <el-input maxlength="30" show-word-limit v-model="form.prob_name">
+                        </el-input>
                     </el-form-item>
-                </el-col>
-            </el-row>
 
-            <el-collapse>
-                <el-collapse-item title="タグ(最大4つまで)" name="1">
-                    <el-checkbox-group v-model="form.checked_tags" :max="4">
-                        <el-checkbox v-for="tag in tags" :label="tag.name" :key="tag.id">{{tag.name}}</el-checkbox>
-                    </el-checkbox-group>
-                    <el-input class="input-new-tag" v-if="inputVisible" v-model="inputTag" ref="saveTagInput"
-                        size="mini" @keypress.enter.native="handleInputConfirm" @blur="handleInputConfirm">
-                    </el-input>
-                    <el-button v-else class="button-new-tag" size="mini" @click="showInput">+ New Tag</el-button>
-                </el-collapse-item>
-            </el-collapse>
-            <br />
+                    <el-row :gutter="10">
+                        <el-col :span="12">
+                            <el-form-item label="傾斜" prop="select_wall">
+                                <el-select v-model="form.select_wall" placeholder="傾斜を選択">
+                                    <el-option v-for="wall in walls" v-bind:value="wall.category" v-bind:key="wall.id">
+                                        {{ wall.category }}
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="グレード" prop="select_grade">
+                                <el-select v-model="form.select_grade" placeholder="グレードを選択">
+                                    <el-option v-for="grade in grades" v-bind:value="grade.grade" v-bind:key="grade.id">
+                                        {{ grade.grade }}
+                                    </el-option>
+                                    <el-button slot="append" icon="el-icon-search"></el-button>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
 
-            <el-form-item label="課題画像" prop="fileList">
-                <el-upload action=""
-                    list-type="picture-card"
-                    :auto-upload="false"
-                    :file-list="form.fileList" 
-                    :on-change="handleAdd"
-                    :on-preview="handlePictureCardPreview"
-                    :on-remove="handleRemove"
-                    >
-                    <i class="el-icon-plus"></i>
-                </el-upload>
-                <el-dialog :visible.sync="previewVisible">
-                    <img width="100%" :src="dialogImageUrl" alt="">
+                    <el-collapse>
+                        <el-collapse-item title="タグ(最大4つまで)" name="1">
+                            <el-checkbox-group v-model="form.checked_tags" :max="4">
+                                <el-checkbox v-for="tag in tags" :label="tag.name" :key="tag.id">{{tag.name}}
+                                </el-checkbox>
+                            </el-checkbox-group>
+                            <el-input class="input-new-tag" v-if="inputVisible" v-model="inputTag" ref="saveTagInput"
+                                size="mini" @keypress.enter.native="handleInputConfirm" @blur="handleInputConfirm">
+                            </el-input>
+                            <el-button v-else class="button-new-tag" size="mini" @click="showInput">+ New Tag
+                            </el-button>
+                        </el-collapse-item>
+                    </el-collapse>
+                    <br />
+
+                    <el-form-item label="課題画像" prop="fileList">
+                        <el-upload action="" list-type="picture-card" :auto-upload="false" :file-list="form.fileList"
+                            :on-change="handleAdd" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                            <i class="el-icon-plus"></i>
+                        </el-upload>
+                        <el-dialog :visible.sync="previewVisible">
+                            <img width="100%" :src="dialogImageUrl" alt="">
+                        </el-dialog>
+                    </el-form-item>
+
+                    <el-row :gutter="10">
+                        <el-col :span="8">
+                            <el-form-item>
+                                <el-switch v-model="form.line_notif" active-text="LINE通知"></el-switch>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item>
+                                <el-button type="primary" @click="dialogVisible = true">登録</el-button>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item>
+                                <el-button @click="resetForm('form')">クリア</el-button>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </el-form>
+
+                <el-dialog title="登録前の確認" :visible.sync="dialogVisible" width="100%" v-cloak>
+                    <span>この内容で登録しますか？</span>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="dialogVisible = false">キャンセル</el-button>
+                        <el-button type="primary" @click="submitForm('form'); dialogVisible = false;">OK</el-button>
+                    </span>
                 </el-dialog>
-            </el-form-item>
 
-            <el-row :gutter="10">
-                <el-col :span="8">
-                    <el-form-item>
-                        <el-switch v-model="form.line_notif" active-text="LINE通知"></el-switch>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                    <el-form-item>
-                        <el-button type="primary" @click="dialogVisible = true">登録</el-button>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                    <el-form-item>
-                        <el-button @click="resetForm('form')">クリア</el-button>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-        </el-form>
-
-        <el-dialog title="登録前の確認" :visible.sync="dialogVisible" width="100%" v-cloak>
-            <span>この内容で登録しますか？</span>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">キャンセル</el-button>
-                <el-button type="primary" @click="submitForm('form'); dialogVisible = false;">OK</el-button>
-            </span>
-        </el-dialog>
-
-        <div v-show="!loading" class="loader"></div>
-        <div v-show="!loading" style="color: #606266;">
-            <center>処理中...お待ち下さい。</center>
-        </div>
+                <div v-show="!loading" class="loader1"></div>
+                <div v-show="!loading" style="color: #606266;">
+                    <center>処理中...お待ち下さい。</center>
+                </div>
+            </div>
+        </section>
     </div>
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>

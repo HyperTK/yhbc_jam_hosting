@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Views</title>
+    <title>Jam Search</title>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <link rel="stylesheet" href="../css/loading.css" />
@@ -17,7 +17,7 @@
     <div id="app" v-cloak>
         <section class="section">
             <div class="container">
-                <h1>View</h1>
+                <h1 class="title">Jam検索</h1>
                 <el-form ref="form" :model="form" :rules="rules" v-show="loading">
                     <el-row :gutter="10">
                         <el-col :span="12">
@@ -47,11 +47,6 @@
                                 <el-checkbox v-for="tag in tags" :label="tag.name" :key="tag.id">{{tag.name}}
                                 </el-checkbox>
                             </el-checkbox-group>
-                            <el-input class="input-new-tag" v-if="inputVisible" v-model="inputTag" ref="saveTagInput"
-                                size="mini" @keypress.enter.native="handleInputConfirm" @blur="handleInputConfirm">
-                            </el-input>
-                            <el-button v-else class="button-new-tag" size="mini" @click="showInput">+ New Tag
-                            </el-button>
                         </el-collapse-item>
                     </el-collapse>
                     <br>
@@ -60,6 +55,22 @@
                         <el-button @click="resetForm('form')">クリア</el-button>
                     </el-form-item>
                 </el-form>
+                <div v-show="resultVisible">
+                    <p>検索結果: {{count}}件</p>
+                    <carousel v-bind:per-page=1>
+                        <slide v-for="c in contents" :key="c.id">
+                            <p>課題名: {{c.problem_name}}</p>
+                            <p>グレード: {{c.grade}}級・傾斜: {{c.wall}}°</p>
+                            <p>作成者: {{c.creator}}</p>
+                            <p>
+                                <el-tag v-for="tag in c.tags" :key="tag.id">
+                                    {{tag.name}}
+                                </el-tag>
+                            </p>
+                            <img v-for="img in c.urls" :src="img">
+                        </slide>
+                    </carousel>
+                </div>
                 <div v-show="!loading" class="loader1"></div>
                 <div v-show="!loading" style="color: #606266;">
                     <center>処理中...お待ち下さい。</center>
@@ -67,10 +78,11 @@
             </div>
         </section>
     </div>
-    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script src="https://unpkg.com/element-ui/lib/umd/locale/ja.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-carousel@0.18.0/dist/vue-carousel.min.js"></script>
     <script src="../js/view.js"></script>
 </body>
 

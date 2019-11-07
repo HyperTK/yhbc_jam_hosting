@@ -20,16 +20,23 @@ var app = new Vue({
         walls:'',
         grades: '',
         tags: '',
-        inputVisible: false,
+        count: 0,
+        contents: [],
+        resultVisible: false,
         dialogVisible: false,
         loading: true,
         rules: {
 
         },
     },
+    components: {
+        'carousel': VueCarousel.Carousel,
+        'slide': VueCarousel.Slide
+    },
     methods: {
         preload() {
             this.loading = false;
+            this.contents = "";
             axios.get(
                 //'https://yhbc-jam-api.herokuapp.com/get_formdata',
                 'http://127.0.0.1:5000/problem/get_formdata',
@@ -45,15 +52,16 @@ var app = new Vue({
                 .catch(error => {
                     console.log(error.response)
                     this.loading = true;
-                    const title = 'データロードエラー' 
+                    const title = 'データロードエラー';
                     const mes = 'データの読み込みに失敗しました。もう一度トライしてください';
                     const dur = 5000;
-                    this.opneErrorNotif(title, mes, dur)
+                    this.opneErrorNotif(title, mes, dur);
                 });
         },
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
             if (valid) {
+                this.resultVisible = false;
                 this.loading = false;
                 var params = {
                     params: {
@@ -73,11 +81,14 @@ var app = new Vue({
                     config,
                     )
                     .then(response => {
-                        const res = response.data
-                        this.id = res.id
-                        this.name = res.name
+                        this.contents = response.data
+                        this.count = this.contents.length
+                        this.resultVisible = true;
                         this.loading = true;
-                        this.registedDialog = true;
+                        const title = '検索結果' 
+                        const mes = this.count + ' 件ヒット！';
+                        const dur = 2000;
+                        this.openSuccessNotif(title, mes, dur)
                     })
                     .catch(error => {
                         console.log(error.response)
@@ -97,7 +108,7 @@ var app = new Vue({
             }
             });
         },
-                handleInputConfirm() {
+        handleInputConfirm() {
             let inputTag = this.inputTag;
             if (inputTag) {
                 var len = this.tags.length;
@@ -115,7 +126,14 @@ var app = new Vue({
         resetForm(formName) {
             this.form.select_grade = '';
             this.form.select_wall = '';
-            this.form.select_tags = '';
+            this.form.checked_tags =[];
+        },
+        openSuccessNotif(title, message, duration) {
+            this.$notify.success({
+                title: title,
+                duration: duration,
+                message: message
+            });
         },
         opneErrorNotif(title, message, duration) {
             this.$notify.error({

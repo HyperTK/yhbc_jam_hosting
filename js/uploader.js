@@ -36,7 +36,6 @@ var app = new Vue({
         dialogVisible: false,
         previewVisible: false,
         inputVisible: false,
-        registedDialog: false,
         loading: true,
 
         rules: {
@@ -71,7 +70,6 @@ var app = new Vue({
                     this.grades = res[0].grades;
                     this.tags = res[0].tags;
                     this.loading = true;
-                    this.registedDialog = true;
                 })
                 .catch(error => {
                     console.log(error.response)
@@ -79,7 +77,7 @@ var app = new Vue({
                     const title = 'データロードエラー' 
                     const mes = 'データの読み込みに失敗しました。もう一度トライしてください';
                     const dur = 5000;
-                    this.opneErrorNotif(title, mes, dur)
+                    this.openErrorNotif(title, mes, dur)
                 });
         },
         submitForm(formName) {
@@ -112,13 +110,12 @@ var app = new Vue({
                         this.id = res.id;
                         this.name = res.name;
                         this.loading = true;
-                        this.checked_tags = [];
-                        this.registedDialog = true;
+                        this.form.checked_tags = [];
                         this.$refs[formName].resetFields();
                         const title = '登録成功' 
                         const mes = '課題の登録に成功しました！';
                         const dur = 5000;
-                        this.opneSuccessNotif(title, mes, dur);
+                        this.openSuccessNotif(title, mes, dur);
                     })
                     .catch(error => {
                         console.log(error.response)
@@ -126,14 +123,15 @@ var app = new Vue({
                         const title = '登録エラー' 
                         const mes = '登録に失敗しました。もう一度やり直してください。\n再度失敗するようであれば「滝野」まで連絡願います。';
                         const dur = 5000;
-                        this.opneErrorNotif(title, mes, dur);
+                        this.openErrorNotif(title, mes, dur);
                     });
             } else {
                 this.loading = true;
+                this.dialogVisible = true;
                 const title = 'データ送信エラー' 
                 const mes = 'データの送信に失敗しました。未入力の項目を確認し、再度トライしてください。';
                 const dur = 5000;
-                this.opneErrorNotif(title, mes, dur);
+                this.openErrorNotif(title, mes, dur);
                 return false;
             }
             });

@@ -40,12 +40,12 @@ var app = new Vue({
                         this.registedTags = response.data;
                         this.loading = true;
                         this.form.dynamicTags = '';
-                        this.opneRegistNotif();
+                        this.openRegistNotif();
                     })
                     .catch(error => {
                         console.log(error.response);
                         this.loading = true;
-                        this.opneErrorNotif();
+                        this.openErrorNotif();
                     });
             } else {
                 console.log('error submit!!');
@@ -70,7 +70,7 @@ var app = new Vue({
                 .catch(error => {
                     console.log(error.response)
                     this.loading = true;
-                    this.opneErrorNotif()
+                    this.openErrorNotif()
                 });
         },
         handleClose(tag) {
@@ -86,12 +86,12 @@ var app = new Vue({
                 .then(response => {
                     this.registedTags = response.data
                     this.loading = true;
-                    this.opneDeleteNotif()
+                    this.openDeleteNotif()
                 })
                 .catch(error => {
                     console.log(error.response)
                     this.loading = true;
-                    this.opneErrorNotif()
+                    this.openErrorNotif()
                 });
             this.registedTags.splice(this.registedTags.indexOf(tag), 1);
         },
@@ -109,21 +109,21 @@ var app = new Vue({
             this.inputVisible = false;
             this.inputTag = '';
         },
-        opneRegistNotif() {
+        openRegistNotif() {
             this.$notify.success({
                 title: '登録OK',
                 duration: 2000,
                 message: 'タグを登録しました！'
             });
         },
-        opneDeleteNotif() {
+        openDeleteNotif() {
             this.$notify.success({
                 title: '削除OK',
                 duration: 2000,
                 message: 'タグを削除しました！'
             });
         },
-        opneErrorNotif() {
+        openErrorNotif() {
             this.$notify.error({
                 title: 'エラー',
                 duration: 5000,
