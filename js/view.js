@@ -12,11 +12,13 @@ var app = new Vue({
         this.preload();
     },
     data: {
+        // 検索フォーム
         form: {
             select_wall: '',
             select_grade: '',
             checked_tags: [],
         },
+        activeName: 'search',
         walls:'',
         grades: '',
         tags: '',
@@ -28,6 +30,38 @@ var app = new Vue({
         rules: {
 
         },
+        // サマリ
+        columns: [
+            {
+                label: 'G',
+                field: 'grade',
+            },
+            {
+                label: 'A',
+                field: 'wall',
+                type: 'number',
+            },
+            {
+                label: 'P',
+                field: 'name',
+            },
+            {
+                label: 'C',
+                field: 'creator',
+            },
+        ],
+        rows: [],
+        searchOptions: {
+            enabled: true,
+            placeholder: '結果を検索します',
+        },
+        sortOptions: {
+            enabled: true,
+            initialSortBy: [
+                {field: 'grade', type: 'asc'},
+                {field: 'wall', type: 'desc'}
+            ]
+        }
     },
     components: {
         'carousel': VueCarousel.Carousel,
@@ -83,6 +117,7 @@ var app = new Vue({
                     .then(response => {
                         this.contents = response.data
                         this.count = this.contents.length
+                        this.makeTableBindData(this.contents)
                         this.resultVisible = true;
                         this.loading = true;
                         const title = '検索結果' 
@@ -107,6 +142,14 @@ var app = new Vue({
                 return false;
             }
             });
+        },
+        makeTableBindData(content) {
+            arr = [];
+            for (let index = 0; index < content.length; index++) {
+                const el = content[index];
+                arr.push({id: index+1, grade: el.grade, wall: el.wall, name: el.problem_name, creator: el.creator});
+            }
+            this.rows = arr;
         },
         handleInputConfirm() {
             let inputTag = this.inputTag;
